@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dragon Ball : Guerre des pays</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Dragon Ball : Guerre des pays</h1>
+  <select id="language-select">
+    <option value="fr" selected>Français</option>
+    <option value="en">English</option>
+    <option value="ar">العربية</option>
+    <option value="es">Español</option>
+    <option value="it">Italiano</option>
+  </select>
+</header>
+<main>
+  <section id="player-setup">
+    <h2>Choisis ton personnage</h2>
+    <select id="character-select"></select>
+    <h2>Choisis ton pays</h2>
+    <select id="country-select"></select>
+    <button id="start-btn">Commencer</button>
+  </section>
+  <section id="game" hidden>
+    <div id="map-container">
+      <!-- Carte interactive -->
+    </div>
+    <div id="controls">
+      <button id="attack-btn">Attaquer</button>
+      <button id="ally-btn">Alliance</button>
+      <button id="peace-btn">Paix</button>
+    </div>
+    <div id="messages"></div>
+  </section>
+</main>
+<script src="countries.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
