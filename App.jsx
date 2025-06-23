@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { Language } from './types.js';
 import { INITIAL_XP, INITIAL_LEVEL, COUNTRIES, TRANSLATIONS, getTranslation } from './gameData.js';
-import { SetupScreen, GameScreen, LanguageSwitcher } from './components';
+import { SetupScreen, GameScreen, LanguageSwitcher } from './components.jsx';
 
 const initialPlayerState = {
   character: null,
