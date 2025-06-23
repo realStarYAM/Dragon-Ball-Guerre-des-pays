@@ -37,4 +37,4 @@ Suggestions et améliorations bienvenues !
 
 ## Licence
 
-Projet open source sous licence MIT.
+Projet open source sous licence MIT. Consultez le fichier [LICENSE](LICENSE) pour plus d'informations.
