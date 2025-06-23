@@ -1,0 +1,5 @@
+{
+  "name": "Dragon Ball: Guerre des Pays",
+  "description": "Un jeu de stratégie interactif où les joueurs choisissent un personnage de Dragon Ball, sélectionnent un pays et se lancent dans des conquêtes mondiales, gèrent des alliances et des guerres, tout en gagnant de l'XP et en montant de niveau. Le jeu comprend une carte du monde interactive, la gestion des langues et la sauvegarde locale de la progression.",
+  "requestFramePermissions": []
+}
