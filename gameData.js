@@ -1,6 +1,6 @@
-import { Character, Country, Language, PredefinedMessage, Translations } from './types';
+import { Language } from './types.js';
 
-export const AVAILABLE_CHARACTERS: Character[] = [
+export const AVAILABLE_CHARACTERS = [
   { id: 'goku', name: 'Son Goku', description: 'Le héros principal, toujours prêt à relever un défi.', avatarId: 'GokuAvatar', firstName: 'Son', lastName: 'Goku', origin: 'Planète Vegeta (élevé sur Terre)' },
   { id: 'vegeta', name: 'Vegeta', description: 'Le prince des Saiyans, fier et puissant.', avatarId: 'VegetaAvatar', firstName: 'Vegeta', origin: 'Planète Vegeta' },
   { id: 'piccolo', name: 'Piccolo', description: 'Sage Namekien et ancien ennemi devenu allié.', avatarId: 'PiccoloAvatar', firstName: 'Piccolo', origin: 'Planète Namek' },
@@ -12,7 +12,7 @@ export const AVAILABLE_CHARACTERS: Character[] = [
 // For the D3 map to work well with IDs, ensure these IDs match what the TopoJSON provides (often ISO 3166-1 numeric or alpha-3, or sometimes alpha-2).
 // If TopoJSON uses numeric IDs, a mapping might be needed or use names for matching.
 // For now, COUNTRIES uses alpha-2, and we'll try to match by name or ID in the map component.
-export const COUNTRIES: Country[] = [
+export const COUNTRIES = [
   { id: 'AF', name: 'Afghanistan', emoji: '🇦🇫', continent: 'Asia'},
   { id: 'AL', name: 'Albania', emoji: '🇦🇱', continent: 'Europe'},
   { id: 'DZ', name: 'Algeria', emoji: '🇩🇿', continent: 'Africa'},
@@ -70,7 +70,7 @@ export const INITIAL_XP = 0;
 export const INITIAL_LEVEL = 1;
 export const XP_PER_LEVEL = 100; // XP needed to advance to the next level
 
-export const TRANSLATIONS: Translations = {
+export const TRANSLATIONS = {
   appName: {
     [Language.FR]: "Dragon Ball: Guerre des Pays",
     [Language.EN]: "Dragon Ball: War of Countries",
@@ -191,13 +191,13 @@ export const TRANSLATIONS: Translations = {
   with: { [Language.FR]: "avec", [Language.EN]: "with", [Language.AR]: "مع", [Language.ES]: "con", [Language.IT]: "con" },
 };
 
-export const PREDEFINED_MESSAGES: PredefinedMessage[] = [
+export const PREDEFINED_MESSAGES = [
   { id: 'hello', textKey: 'messageHello' },
   { id: 'love', textKey: 'messageLove' },
   { id: 'warningGeneric', textKey: 'messageWarningGeneric' },
   { id: 'warningIsraelLebanon', textKey: 'messageWarningIsraelLebanon'},
 ];
 
-export const getTranslation = (key: string, lang: Language): string => {
+export const getTranslation = (key, lang) => {
   return TRANSLATIONS[key]?.[lang] || key;
 };
