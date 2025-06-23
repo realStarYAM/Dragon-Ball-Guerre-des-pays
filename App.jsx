@@ -1,9 +1,9 @@
 import React, { useState, useEffect, createContext } from 'react';
-import { GameState, PlayerState, Language, Character, Country, CountryStatus } from './types';
-import { INITIAL_XP, INITIAL_LEVEL, COUNTRIES, TRANSLATIONS, getTranslation } from './gameData';
+import { Language } from './types.js';
+import { INITIAL_XP, INITIAL_LEVEL, COUNTRIES, TRANSLATIONS, getTranslation } from './gameData.js';
 import { SetupScreen, GameScreen, LanguageSwitcher } from './components';
 
-const initialPlayerState: PlayerState = {
+const initialPlayerState = {
   character: null,
   xp: INITIAL_XP,
   level: INITIAL_LEVEL,
@@ -11,13 +11,13 @@ const initialPlayerState: PlayerState = {
   homeCountryId: null,
 };
 
-const initialCountryStatuses: Record<string, CountryStatus> = COUNTRIES.reduce((acc, country) => {
+const initialCountryStatuses = COUNTRIES.reduce((acc, country) => {
   acc[country.id] = { owner: 'neutral', allianceWithPlayer: false };
   return acc;
-}, {} as Record<string, CountryStatus>);
+}, {});
 
 
-const initialGameState: GameState = {
+const initialGameState = {
   playerState: initialPlayerState,
   countryStatuses: initialCountryStatuses,
   currentLanguage: Language.FR, // Default language
@@ -27,20 +27,13 @@ const initialGameState: GameState = {
 };
 
 // Contexts
-export const LanguageContext = createContext<{
-  currentLanguage: Language;
-  setCurrentLanguage: (lang: Language) => void;
-  translate: (key: string) => string;
-}>({
+export const LanguageContext = createContext({
   currentLanguage: Language.FR,
   setCurrentLanguage: () => {},
-  translate: (key: string) => key,
+  translate: (key) => key,
 });
 
-export const GameContext = createContext<{
-  gameState: GameState;
-  setGameState: React.Dispatch<React.SetStateAction<GameState>>;
-}>({
+export const GameContext = createContext({
   gameState: initialGameState,
   setGameState: () => {},
 });
@@ -48,17 +41,17 @@ export const GameContext = createContext<{
 const APP_STORAGE_KEY = 'dragonBallWarGame';
 const LANGUAGE_STORAGE_KEY = 'dragonBallWarGameLang';
 
-const App: React.FC = () => {
-  const [currentLanguage, setCurrentLanguageState] = useState<Language>(() => {
+const App = () => {
+  const [currentLanguage, setCurrentLanguageState] = useState(() => {
     const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-    return (savedLang as Language) || Language.FR;
+    return savedLang || Language.FR;
   });
 
-  const [gameState, setGameState] = useState<GameState>(() => {
+  const [gameState, setGameState] = useState(() => {
     const savedGame = localStorage.getItem(APP_STORAGE_KEY);
     if (savedGame) {
       try {
-        const parsedGame = JSON.parse(savedGame) as GameState;
+        const parsedGame = JSON.parse(savedGame);
         // Ensure all countries have a status, even if new ones were added to gameData.ts
         const fullCountryStatuses = { ...initialCountryStatuses, ...parsedGame.countryStatuses };
         return { ...parsedGame, countryStatuses: fullCountryStatuses, currentLanguage: currentLanguage };
@@ -83,19 +76,19 @@ const App: React.FC = () => {
     localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(gameState));
   }, [gameState]);
 
-  const setCurrentLanguage = (lang: Language) => {
+  const setCurrentLanguage = (lang) => {
     setCurrentLanguageState(lang);
     setGameState(prev => ({ ...prev, currentLanguage: lang })); // Sync with game state too
   };
   
-  const translate = (key: string) => {
+  const translate = (key) => {
     return getTranslation(key, currentLanguage);
   };
 
   const handleGameStart = (
-    playerName: string,
-    character: Character,
-    homeCountryId: string
+    playerName,
+    character,
+    homeCountryId
   ) => {
     setGameState(prev => {
       const newCountryStatuses = { ...prev.countryStatuses };

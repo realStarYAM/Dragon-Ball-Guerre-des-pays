@@ -1,34 +1,34 @@
 
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { Character, Country, Language, PlayerState, PredefinedMessage, GameState, CountryStatus } from './types';
-import { AVAILABLE_CHARACTERS, COUNTRIES, PREDEFINED_MESSAGES, getTranslation, TRANSLATIONS, XP_PER_LEVEL } from './gameData';
+import { Language } from './types.js';
+import { AVAILABLE_CHARACTERS, COUNTRIES, PREDEFINED_MESSAGES, getTranslation, TRANSLATIONS, XP_PER_LEVEL } from './gameData.js';
 import { GameContext, LanguageContext } from './App'; // Assuming contexts are exported from App.tsx
 import * as d3 from 'd3';
 import *লাইনেtopojson from 'topojson-client';
 
 // --- SVG Avatars ---
-const GokuAvatar: React.FC<{className?: string}> = ({className}) => (
+const GokuAvatar = ({ className }) => (
   <svg viewBox="0 0 100 100" className={`w-12 h-12 md:w-16 md:h-16 rounded-full bg-orange-500 text-white ${className}`}>
     <text x="50" y="60" textAnchor="middle" fontSize="40">悟空</text>
   </svg>
 );
-const VegetaAvatar: React.FC<{className?: string}> = ({className}) => (
+const VegetaAvatar = ({ className }) => (
   <svg viewBox="0 0 100 100" className={`w-12 h-12 md:w-16 md:h-16 rounded-full bg-blue-700 text-white ${className}`}>
     <text x="50" y="60" textAnchor="middle" fontSize="35">ベジータ</text>
   </svg>
 );
-const PiccoloAvatar: React.FC<{className?: string}> = ({className}) => (
+const PiccoloAvatar = ({ className }) => (
   <svg viewBox="0 0 100 100" className={`w-12 h-12 md:w-16 md:h-16 rounded-full bg-green-500 text-white ${className}`}>
     <text x="50" y="60" textAnchor="middle" fontSize="40">ピッコロ</text>
   </svg>
 );
-const BulmaAvatar: React.FC<{className?: string}> = ({className}) => (
+const BulmaAvatar = ({ className }) => (
   <svg viewBox="0 0 100 100" className={`w-12 h-12 md:w-16 md:h-16 rounded-full bg-teal-400 text-white ${className}`}>
     <text x="50" y="60" textAnchor="middle" fontSize="35">ブルマ</text>
   </svg>
 );
 
-const AVATAR_MAP: Record<string, React.FC<{className?: string}>> = {
+const AVATAR_MAP = {
   GokuAvatar,
   VegetaAvatar,
   PiccoloAvatar,
@@ -36,20 +36,13 @@ const AVATAR_MAP: Record<string, React.FC<{className?: string}>> = {
   // Add more as needed
 };
 
-export const AvatarDisplay: React.FC<{ avatarId: string, className?: string }> = ({ avatarId, className }) => {
+export const AvatarDisplay = ({ avatarId, className }) => {
   const AvatarComponent = AVATAR_MAP[avatarId];
   return AvatarComponent ? <AvatarComponent className={className} /> : <div className={`w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-400 ${className}`} aria-label="Default avatar">?</div>;
 };
 
 // --- Character Components ---
-interface CharacterCardProps {
-  character: Character;
-  onSelect: (character: Character) => void;
-  isSelected: boolean;
-  language: Language;
-}
-
-const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelect, isSelected, language }) => {
+const CharacterCard = ({ character, onSelect, isSelected, language }) => {
   return (
     <button
       onClick={() => onSelect(character)}
@@ -72,10 +65,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({ character, onSelect, isSe
   );
 };
 
-export const CharacterSelection: React.FC<{
-  onCharacterSelect: (character: Character) => void;
-  selectedCharacter: Character | null;
-}> = ({ onCharacterSelect, selectedCharacter }) => {
+export const CharacterSelection = ({ onCharacterSelect, selectedCharacter }) => {
   const { currentLanguage } = useContext(LanguageContext);
 
   return (
@@ -98,11 +88,7 @@ export const CharacterSelection: React.FC<{
 
 
 // --- Country Components ---
-export const CountrySelector: React.FC<{
-  onCountrySelect: (countryId: string) => void;
-  selectedCountryId: string | null;
-  disabled?: boolean;
-}> = ({ onCountrySelect, selectedCountryId, disabled }) => {
+export const CountrySelector = ({ onCountrySelect, selectedCountryId, disabled }) => {
   const { currentLanguage } = useContext(LanguageContext);
 
   return (
@@ -127,7 +113,7 @@ export const CountrySelector: React.FC<{
 };
 
 // --- Player HUD ---
-export const PlayerHUD: React.FC = () => {
+export const PlayerHUD = () => {
   const { gameState } = useContext(GameContext);
   const { currentLanguage } = useContext(LanguageContext);
   const { playerState } = gameState;
@@ -165,15 +151,8 @@ export const PlayerHUD: React.FC = () => {
 
 
 // --- World Map ---
-interface WorldMapProps {
-  onCountrySelect: (countryId: string | null) => void;
-  selectedCountryId: string | null;
-  countryStatuses: Record<string, CountryStatus>;
-  playerHomeCountryId: string | null;
-}
-
-export const WorldMap: React.FC<WorldMapProps> = ({ onCountrySelect, selectedCountryId, countryStatuses, playerHomeCountryId }) => {
-  const svgRef = useRef<SVGSVGElement>(null);
+export const WorldMap = ({ onCountrySelect, selectedCountryId, countryStatuses, playerHomeCountryId }) => {
+  const svgRef = useRef(null);
   const { currentLanguage } = useContext(LanguageContext);
 
   useEffect(() => {
@@ -193,23 +172,21 @@ export const WorldMap: React.FC<WorldMapProps> = ({ onCountrySelect, selectedCou
 
     // Fetch world map data (TopoJSON format)
     // Using a more detailed map for better country outlines
-    d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then((world: any) => {
+    d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then((world) => {
       if (!world) {
         console.error("Failed to load world map data.");
         return;
       }
       // Convert TopoJSON to GeoJSON
-      // @ts-ignore
       const countriesGeoJSON = topojson.feature(world, world.objects.countries);
 
       svg.append("g")
         .selectAll("path")
-        // @ts-ignore
         .data(countriesGeoJSON.features)
         .enter().append("path")
-        .attr("d", path as any)
+        .attr("d", path)
         .attr("class", "country stroke-gray-700 stroke-[0.5px] cursor-pointer")
-        .attr("fill", (d: any) => {
+        .attr("fill", (d) => {
             const countryId = d.id; // TopoJSON often uses ISO 3166-1 numeric, need to map to alpha-2 or match by name
             // For this example, we'll try to find by name, but ISO alpha-2 in your COUNTRIES data is better
             const gameCountry = COUNTRIES.find(c => c.name === d.properties.name || c.id === d.id); // d.id might be numeric, check properties
@@ -223,13 +200,13 @@ export const WorldMap: React.FC<WorldMapProps> = ({ onCountrySelect, selectedCou
             }
           return "#4a5568"; // Default: slate-600
         })
-        .on("mouseover", function(event, d: any) {
+        .on("mouseover", function(event, d) {
           d3.select(this).style("fill-opacity", 0.7);
         })
-        .on("mouseout", function(event, d: any) {
+        .on("mouseout", function(event, d) {
           d3.select(this).style("fill-opacity", 1);
         })
-        .on("click", (event, d: any) => {
+        .on("click", (event, d) => {
             const gameCountry = COUNTRIES.find(c => c.name === d.properties.name || c.id === d.id);
             if (gameCountry) {
               onCountrySelect(gameCountry.id);
@@ -237,11 +214,11 @@ export const WorldMap: React.FC<WorldMapProps> = ({ onCountrySelect, selectedCou
               onCountrySelect(null); // No matching game country found
             }
         })
-        .style("stroke", (d: any) => {
+        .style("stroke", (d) => {
             const gameCountry = COUNTRIES.find(c => c.name === d.properties.name || c.id === d.id);
             return gameCountry?.id === selectedCountryId ? "#fbbf24" : "#374151"; // Amber-400 or gray-800
         })
-        .style("stroke-width", (d: any) => {
+        .style("stroke-width", (d) => {
             const gameCountry = COUNTRIES.find(c => c.name === d.properties.name || c.id === d.id);
             return gameCountry?.id === selectedCountryId ? "2px" : "0.5px";
         });
@@ -252,7 +229,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({ onCountrySelect, selectedCou
             .style("transition", "opacity 0.2s");
 
         svg.selectAll(".country")
-            .on("mouseover", function(event, d: any) {
+            .on("mouseover", function(event, d) {
                 d3.select(this).style("fill-opacity", 0.7);
                 const gameCountry = COUNTRIES.find(c => c.name === d.properties.name || c.id === d.id);
                 tooltip.style("opacity", 1)
@@ -285,7 +262,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({ onCountrySelect, selectedCou
         
         // Re-project and re-draw if needed, or simply adjust scale/translate
         projection.scale(newWidth / (2 * Math.PI) * 0.9).translate([newWidth / 2, newHeight / 1.5]);
-        svg.selectAll("path").attr("d", path as any);
+        svg.selectAll("path").attr("d", path);
     });
 
     if (svgRef.current.parentElement) {
@@ -307,7 +284,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({ onCountrySelect, selectedCou
 };
 
 // --- Language Switcher ---
-export const LanguageSwitcher: React.FC = () => {
+export const LanguageSwitcher = () => {
   const { currentLanguage, setCurrentLanguage } = useContext(LanguageContext);
   const languages = Object.values(Language);
 
@@ -331,7 +308,7 @@ export const LanguageSwitcher: React.FC = () => {
 
 
 // --- Predefined Messages ---
-export const PredefinedMessageButton: React.FC<{ message: PredefinedMessage, onClick: (message: PredefinedMessage) => void }> = ({ message, onClick }) => {
+export const PredefinedMessageButton = ({ message, onClick }) => {
   const { currentLanguage } = useContext(LanguageContext);
   return (
     <button
@@ -343,7 +320,7 @@ export const PredefinedMessageButton: React.FC<{ message: PredefinedMessage, onC
   );
 };
 
-export const PredefinedMessagesPanel: React.FC<{ onMessageSend: (message: PredefinedMessage) => void }> = ({ onMessageSend }) => {
+export const PredefinedMessagesPanel = ({ onMessageSend }) => {
   const { currentLanguage } = useContext(LanguageContext);
 
   // Example: How to handle a specific message like the Israel-Lebanon one if needed dynamically.
@@ -369,12 +346,7 @@ export const PredefinedMessagesPanel: React.FC<{ onMessageSend: (message: Predef
 
 
 // --- Selected Country Info Panel & Actions ---
-export const SelectedCountryInfoPanel: React.FC<{
-  countryId: string | null;
-  onAttack: (countryId: string) => void;
-  onAlly: (countryId: string) => void;
-  onPeaceTreaty: (countryId: string) => void;
-}> = ({ countryId, onAttack, onAlly, onPeaceTreaty }) => {
+export const SelectedCountryInfoPanel = ({ countryId, onAttack, onAlly, onPeaceTreaty }) => {
   const { gameState } = useContext(GameContext);
   const { currentLanguage } = useContext(LanguageContext);
 
@@ -461,15 +433,13 @@ export const SelectedCountryInfoPanel: React.FC<{
 
 
 // --- Setup Screen ---
-export const SetupScreen: React.FC<{
-  onGameStart: (playerName: string, character: Character, homeCountryId: string) => void;
-}> = ({ onGameStart }) => {
+export const SetupScreen = ({ onGameStart }) => {
   const [playerName, setPlayerName] = useState('');
-  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
-  const [selectedHomeCountry, setSelectedHomeCountry] = useState<string | null>(null);
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [selectedHomeCountry, setSelectedHomeCountry] = useState(null);
   const { currentLanguage } = useContext(LanguageContext);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (playerName && selectedCharacter && selectedHomeCountry) {
       onGameStart(playerName, selectedCharacter, selectedHomeCountry);
@@ -519,16 +489,16 @@ export const SetupScreen: React.FC<{
 };
 
 // --- Game Screen (Main gameplay view) ---
-export const GameScreen: React.FC = () => {
+export const GameScreen = () => {
   const { gameState, setGameState } = useContext(GameContext);
   const { currentLanguage } = useContext(LanguageContext);
-  const [selectedMapCountryId, setSelectedMapCountryId] = useState<string | null>(null);
+  const [selectedMapCountryId, setSelectedMapCountryId] = useState(null);
 
-  const handleCountrySelectOnMap = (countryId: string | null) => {
+  const handleCountrySelectOnMap = (countryId) => {
     setSelectedMapCountryId(countryId);
   };
 
-  const handleAttack = (countryId: string) => {
+  const handleAttack = (countryId) => {
     // Basic attack logic: AI country becomes player-owned. Player gains XP.
     // In a real game, this would involve combat mechanics, strength comparison, etc.
     console.log(`Player attacking ${countryId}`);
@@ -553,7 +523,7 @@ export const GameScreen: React.FC = () => {
     alert(`You attacked and conquered ${COUNTRIES.find(c=>c.id === countryId)?.name}!`);
   };
 
-  const handleAlly = (countryId: string) => {
+  const handleAlly = (countryId) => {
     // Basic ally logic: AI country becomes allied with player. Player gains XP.
     console.log(`Player forming alliance with ${countryId}`);
      setGameState(prev => {
@@ -580,7 +550,7 @@ export const GameScreen: React.FC = () => {
   };
 
   // Or break alliance
-  const handlePeaceTreaty = (countryId: string) => {
+  const handlePeaceTreaty = (countryId) => {
     console.log(`Player breaking alliance/making peace with ${countryId}`);
     setGameState(prev => {
       const newCountryStatuses = { ...prev.countryStatuses };
@@ -598,7 +568,7 @@ export const GameScreen: React.FC = () => {
   };
 
 
-  const handleSendMessage = (message: PredefinedMessage) => {
+  const handleSendMessage = (message) => {
     const translatedMessage = getTranslation(message.textKey, currentLanguage);
     // In a real game, this might go to a chat log, or trigger an event.
     // For "Attention à Israël qui attaque le Liban", this could trigger a game event or AI behavior.
