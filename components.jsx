@@ -4,7 +4,7 @@ import { Language } from './types.js';
 import { AVAILABLE_CHARACTERS, COUNTRIES, PREDEFINED_MESSAGES, getTranslation, TRANSLATIONS, XP_PER_LEVEL } from './gameData.js';
 import { GameContext, LanguageContext } from './App.jsx';
 import * as d3 from 'd3';
-import *লাইনেtopojson from 'topojson-client';
+import * as topojson from 'topojson-client';
 
 // --- SVG Avatars ---
 const GokuAvatar = ({ className }) => (
