@@ -1,0 +1,11 @@
+/* Base styles for dark theme */
+body {
+  background-color: #111827; /* gray-900 */
+  color: #ffffff;
+}
+
+/* Ensure map container scales well */
+.map-container svg {
+  max-width: 100%;
+  height: auto;
+}
