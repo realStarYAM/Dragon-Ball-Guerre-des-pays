@@ -2,7 +2,7 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import { Language } from './types.js';
 import { AVAILABLE_CHARACTERS, COUNTRIES, PREDEFINED_MESSAGES, getTranslation, TRANSLATIONS, XP_PER_LEVEL } from './gameData.js';
-import { GameContext, LanguageContext } from './App'; // Assuming contexts are exported from App.tsx
+import { GameContext, LanguageContext } from './App.jsx';
 import * as d3 from 'd3';
 import *লাইনেtopojson from 'topojson-client';
 
